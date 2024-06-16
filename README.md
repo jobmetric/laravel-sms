@@ -33,4 +33,4 @@ coming soon
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/jobmetric/laravel-sms/blob/master/README.md) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/jobmetric/laravel-sms/blob/master/LICENCE.md) for more information.
