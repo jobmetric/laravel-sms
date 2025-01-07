@@ -20,7 +20,8 @@
     "require": {
         "php": ">=8.0.1",
         "laravel/framework": ">=9.19",
-        "jobmetric/laravel-package-core": "^1.7"
+        "jobmetric/laravel-package-core": "^1.19",
+        "kavenegar/php": "^1.2"
     },
     "autoload": {
         "files": [
