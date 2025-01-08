@@ -5,8 +5,8 @@ namespace JobMetric\Sms\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JobMetric\Authio\Models\User;
 use JobMetric\Sms\Enums\SmsFieldStatusEnum;
+use JobMetric\Sms\Facades\Sms as SmsFacade;
 use JobMetric\Sms\Models\Sms;
-use JobMetric\Sms\Sms as SmsService;
 
 /**
  * @extends Factory<Sms>
@@ -26,7 +26,7 @@ class SmsFactory extends Factory
         $user = $users->random();
 
         $note = $this->faker->sentence;
-        $processText = SmsService::processText($note);
+        $processText = SmsFacade::processText($note);
         return [
             'sms_gateway_id' => null,
             'user_id' => $user->id,

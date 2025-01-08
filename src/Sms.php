@@ -14,7 +14,7 @@ class Sms
      *
      * @return array
      */
-    public static function processText(string $text): array
+    public function processText(string $text): array
     {
         $textLength = Str::length($text);
         $regexPersian = '/[آابپتسجچهابپتثجچحخدذرزژسشصضطظعغفقکگلمینوهءآاًهٔة۰۱۲۳۴۵۶۷۸۹]/';
