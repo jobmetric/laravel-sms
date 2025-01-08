@@ -10,9 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string $driver
  * @property array $fields
- * @property array $options
- * @property array $pricing
  * @property bool $default
+ * @method static find(int $sms_gateway_id)
  */
 class SmsGateway extends Model
 {
@@ -23,8 +22,6 @@ class SmsGateway extends Model
         'name',
         'driver',
         'fields',
-        'options',
-        'pricing',
         'default',
     ];
 
@@ -37,8 +34,6 @@ class SmsGateway extends Model
         'name' => 'string',
         'driver' => 'string',
         'fields' => 'array',
-        'options' => 'array',
-        'pricing' => 'array',
         'default' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

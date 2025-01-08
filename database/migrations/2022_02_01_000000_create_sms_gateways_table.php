@@ -23,8 +23,6 @@ return new class extends Migration {
              */
 
             $table->json('fields')->nullable();
-            $table->json('options')->nullable();
-            $table->json('pricing')->nullable();
 
             $table->boolean('default')->default(false)->index();
 
