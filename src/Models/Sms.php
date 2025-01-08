@@ -67,7 +67,6 @@ class Sms extends Model
         'note' => 'string',
         'note_type' => 'string',
         'page' => 'int',
-        'price_per_page' => 'float',
         'price' => 'float',
         'reference_id' => 'string',
         'reference_status' => 'string',
