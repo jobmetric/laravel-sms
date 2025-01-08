@@ -40,6 +40,16 @@ interface SmsContract
     public function send(Sms $sms): void;
 
     /**
+     * Send lookup
+     *
+     * @param Sms $sms
+     * @param array $tokens
+     *
+     * @return void
+     */
+    public function lookup(Sms $sms, array $tokens = []): void;
+
+    /**
      * Get balance gateway.
      *
      * @param SmsGateway $smsGateway
