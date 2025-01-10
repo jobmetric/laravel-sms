@@ -25,7 +25,7 @@ class StoreSmsGatewayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:sms_gateways:name',
+            'name' => 'required|string|unique:sms_gateways,name',
             'driver' => 'required|string',
             'fields' => 'array|sometimes',
             'fields.*' => 'required|string',
