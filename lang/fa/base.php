@@ -41,12 +41,24 @@ return [
     ],
 
     "form" => [
-        "fields" => [
-            "name" => [
-                "title" => "نام",
+        "sms_gateway" => [
+            "create" => [
+                "title" => "ایجاد درگاه پیامک",
             ],
-            "driver" => [
-                "title" => "درایور",
+            "edit" => [
+                "title" => "ویرایش درگاه پیامک",
+            ],
+            "cards" => [
+                "driver_fields" => "فیلدهای درایور",
+            ],
+            "fields" => [
+                "name" => [
+                    "title" => "نام",
+                    "placeholder" => "نام درگاه پیامک",
+                ],
+                "driver" => [
+                    "title" => "درایور",
+                ],
             ],
         ],
     ],

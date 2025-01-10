@@ -41,12 +41,24 @@ return [
     ],
 
     "form" => [
-        "fields" => [
-            "name" => [
-                "title" => "Name",
+        "sms_gateway" => [
+            "create" => [
+                "title" => "Create SMS Gateway",
             ],
-            "driver" => [
-                "title" => "Driver",
+            "edit" => [
+                "title" => "Edit SMS Gateway",
+            ],
+            "cards" => [
+                "driver_fields" => "Driver Fields",
+            ],
+            "fields" => [
+                "name" => [
+                    "title" => "Name",
+                    "placeholder" => "SMS Gateway Name",
+                ],
+                "driver" => [
+                    "title" => "Driver",
+                ],
             ],
         ],
     ],
