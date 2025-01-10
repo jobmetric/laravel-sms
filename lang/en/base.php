@@ -19,7 +19,7 @@ return [
         "sms_gateway" => [
             "created" => "The SMS gateway was successfully created.",
             "updated" => "The SMS gateway was successfully updated.",
-            "deleted" => "The SMS gateway was successfully deleted.",
+            "deleted_items" => "{1} One SMS gateway was successfully deleted.|[2,*] :count SMS gateways were successfully deleted.",
         ],
     ],
 
