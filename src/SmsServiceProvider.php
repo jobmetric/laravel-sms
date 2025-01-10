@@ -2,6 +2,7 @@
 
 namespace JobMetric\Sms;
 
+use JobMetric\PackageCore\Exceptions\AssetFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\MigrationFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\RegisterClassTypeNotFoundException;
 use JobMetric\PackageCore\PackageCore;
@@ -15,11 +16,13 @@ class SmsServiceProvider extends PackageCoreServiceProvider
      * @return void
      * @throws MigrationFolderNotFoundException
      * @throws RegisterClassTypeNotFoundException
+     * @throws AssetFolderNotFoundException
      */
     public function configuration(PackageCore $package): void
     {
         $package->name('laravel-sms')
             ->hasConfig()
+            ->hasAsset()
             ->hasMigration()
             ->hasTranslation()
             ->hasRoute()
