@@ -10,9 +10,9 @@ use JobMetric\Panelio\Facades\Button;
 use JobMetric\Panelio\Facades\Datatable;
 use JobMetric\Panelio\Http\Controllers\Controller;
 use JobMetric\Sms\Facades\SmsGateway;
-use JobMetric\Sms\Http\Resources\SmsGatewayResource;
 use JobMetric\Sms\Http\Requests\StoreSmsGatewayRequest;
 use JobMetric\Sms\Http\Requests\UpdateSmsGatewayRequest;
+use JobMetric\Sms\Http\Resources\SmsGatewayResource;
 use JobMetric\Sms\Models\SmsGateway as SmsGatewayModel;
 use Throwable;
 
@@ -83,35 +83,22 @@ class SmsGatewayController extends Controller
      *
      * @param string $panel
      * @param string $section
-     * @param string $type
      *
      * @return View
      */
-    public function create(string $panel, string $section, string $type): View
+    public function create(string $panel, string $section): View
     {
         $data['mode'] = 'create';
 
-        $serviceType = SmsGatewayType::type($type);
+        $title_list = trans('sms::base.list.sms_gateway.title');
+        $title = trans('sms::base.form.sms_gateway.create.title');
 
-        $data['label'] = $serviceType->getLabel();
-        $data['description'] = $serviceType->getDescription();
-        $data['translation'] = $serviceType->getTranslation();
-        $data['media'] = $serviceType->getMedia();
-        $data['metadata'] = $serviceType->getMetadata();
-        $data['hasUrl'] = $serviceType->hasUrl();
-        $data['hasHierarchical'] = $serviceType->hasHierarchical();
-        $data['hasBaseMedia'] = $serviceType->hasBaseMedia();
-
-        DomiTitle(trans('taxonomy::base.form.create.title', [
-            'type' => $data['label']
-        ]));
+        DomiTitle($title);
 
         // Add breadcrumb
         add_breadcrumb_base($panel, $section);
-        Breadcrumb::add($data['label'], $this->route['index']);
-        Breadcrumb::add(trans('taxonomy::base.form.create.title', [
-            'type' => $data['label']
-        ]));
+        Breadcrumb::add($title_list, $this->route['index']);
+        Breadcrumb::add($title);
 
         // add button
         Button::save();
@@ -119,14 +106,13 @@ class SmsGatewayController extends Controller
         Button::saveClose();
         Button::cancel($this->route['index']);
 
-        DomiScript('assets/vendor/taxonomy/js/form.js');
+        DomiScript('assets/vendor/sms/js/sms_gateway/form.js');
 
-        $data['type'] = $type;
         $data['action'] = $this->route['store'];
 
-        $data['taxonomies'] = SmsGateway::all($type);
+        $data['drivers'] = getDriverNames(config('sms.namespaces'));
 
-        return view('taxonomy::form', $data);
+        return view('sms::sms_gateway.form', $data);
     }
 
     /**
@@ -135,19 +121,18 @@ class SmsGatewayController extends Controller
      * @param StoreSmsGatewayRequest $request
      * @param string $panel
      * @param string $section
-     * @param string $type
      *
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(StoreSmsGatewayRequest $request, string $panel, string $section, string $type): RedirectResponse
+    public function store(StoreSmsGatewayRequest $request, string $panel, string $section): RedirectResponse
     {
         $form_data = $request->all();
 
-        $taxonomy = SmsGateway::store($request->validated());
+        $sms_gateway = SmsGateway::store($request->validated());
 
-        if ($taxonomy['ok']) {
-            $this->alert($taxonomy['message']);
+        if ($sms_gateway['ok']) {
+            $this->alert($sms_gateway['message']);
 
             if ($form_data['save'] == 'save.new') {
                 return back();
@@ -158,15 +143,14 @@ class SmsGatewayController extends Controller
             }
 
             // btn save
-            return redirect()->route('taxonomy.{type}.edit', [
+            return redirect()->route('sms.sms_gateway.edit', [
                 'panel' => $panel,
                 'section' => $section,
-                'type' => $type,
-                'jm_taxonomy' => $taxonomy['data']->id
+                'sms_gateway' => $sms_gateway['data']->id
             ]);
         }
 
-        $this->alert($taxonomy['message'], 'danger');
+        $this->alert($sms_gateway['message'], 'danger');
 
         return back();
     }
@@ -176,40 +160,23 @@ class SmsGatewayController extends Controller
      *
      * @param string $panel
      * @param string $section
-     * @param string $type
-     * @param SmsGatewayModel $taxonomy
+     * @param SmsGatewayModel $sms_gateway
      *
      * @return View
      */
-    public function edit(string $panel, string $section, string $type, SmsGatewayModel $taxonomy): View
+    public function edit(string $panel, string $section, SmsGatewayModel $sms_gateway): View
     {
-        $taxonomy->load(['files', 'metas', 'translations']);
-
         $data['mode'] = 'edit';
 
-        $serviceType = SmsGatewayType::type($type);
+        $title_list = trans('sms::base.list.sms_gateway.title');
+        $title = trans('sms::base.form.sms_gateway.edit.title');
 
-        $data['label'] = $serviceType->getLabel();
-        $data['description'] = $serviceType->getDescription();
-        $data['translation'] = $serviceType->getTranslation();
-        $data['media'] = $serviceType->getMedia();
-        $data['metadata'] = $serviceType->getMetadata();
-        $data['hasUrl'] = $serviceType->hasUrl();
-        $data['hasHierarchical'] = $serviceType->hasHierarchical();
-        $data['hasBaseMedia'] = $serviceType->hasBaseMedia();
-
-        DomiTitle(trans('taxonomy::base.form.edit.title', [
-            'type' => $data['label'],
-            'name' => $taxonomy->id
-        ]));
+        DomiTitle($title);
 
         // Add breadcrumb
         add_breadcrumb_base($panel, $section);
-        Breadcrumb::add($data['label'], $this->route['index']);
-        Breadcrumb::add(trans('taxonomy::base.form.edit.title', [
-            'type' => $data['label'],
-            'name' => $taxonomy->id
-        ]));
+        Breadcrumb::add($title_list, $this->route['index']);
+        Breadcrumb::add($title);
 
         // add button
         Button::save();
@@ -217,26 +184,18 @@ class SmsGatewayController extends Controller
         Button::saveClose();
         Button::cancel($this->route['index']);
 
-        DomiScript('assets/vendor/taxonomy/js/form.js');
+        DomiScript('assets/vendor/sms/js/sms_gateway/form.js');
 
-        $data['type'] = $type;
-        $data['action'] = route('taxonomy.{type}.update', [
+        $data['action'] = route('sms.sms_gateway.update', [
             'panel' => $panel,
             'section' => $section,
-            'type' => $type,
-            'jm_taxonomy' => $taxonomy->id
+            'sms_gateway' => $sms_gateway->id
         ]);
 
-        $data['languages'] = Language::all();
-        $data['taxonomies'] = SmsGateway::all($type);
+        $data['sms_gateway'] = $sms_gateway;
+        $data['drivers'] = getDriverNames(config('sms.namespaces'));
 
-        $data['taxonomy'] = $taxonomy;
-        $data['slug'] = $taxonomy->urlByCollection($type, true);
-        $data['translation_edit_values'] = translationResourceData($taxonomy->translations);
-        $data['media_values'] = $taxonomy->getMediaDataForObject();
-        $data['meta_values'] = $taxonomy->getMetaDataForObject();
-
-        return view('taxonomy::form', $data);
+        return view('sms::sms_gateway.form', $data);
     }
 
     /**
@@ -245,20 +204,19 @@ class SmsGatewayController extends Controller
      * @param UpdateSmsGatewayRequest $request
      * @param string $panel
      * @param string $section
-     * @param string $type
-     * @param SmsGatewayModel $taxonomy
+     * @param SmsGatewayModel $sms_gateway
      *
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(UpdateSmsGatewayRequest $request, string $panel, string $section, string $type, SmsGatewayModel $taxonomy): RedirectResponse
+    public function update(UpdateSmsGatewayRequest $request, string $panel, string $section, SmsGatewayModel $sms_gateway): RedirectResponse
     {
         $form_data = $request->all();
 
-        $taxonomy = SmsGateway::update($taxonomy->id, $request->validated());
+        $sms_gateway = SmsGateway::update($sms_gateway->id, $request->validated());
 
-        if ($taxonomy['ok']) {
-            $this->alert($taxonomy['message']);
+        if ($sms_gateway['ok']) {
+            $this->alert($sms_gateway['message']);
 
             if ($form_data['save'] == 'save.new') {
                 return redirect()->to($this->route['create']);
@@ -269,15 +227,14 @@ class SmsGatewayController extends Controller
             }
 
             // btn save
-            return redirect()->route('taxonomy.{type}.edit', [
+            return redirect()->route('sms.sms_gateway.edit', [
                 'panel' => $panel,
                 'section' => $section,
-                'type' => $type,
-                'jm_taxonomy' => $taxonomy['data']->id
+                'sms_gateway' => $sms_gateway['data']->id
             ]);
         }
 
-        $this->alert($taxonomy['message'], 'danger');
+        $this->alert($sms_gateway['message'], 'danger');
 
         return back();
     }
@@ -295,18 +252,12 @@ class SmsGatewayController extends Controller
      */
     public function deletes(array $ids, mixed $params, string &$alert = null, string &$danger = null): bool
     {
-        $type = $params[2] ?? null;
-
-        $serviceType = SmsGatewayType::type($type);
-
         try {
             foreach ($ids as $id) {
                 SmsGateway::delete($id);
             }
 
-            $alert = trans_choice('taxonomy::base.messages.deleted_items', count($ids), [
-                'taxonomy' => $serviceType->getLabel()
-            ]);
+            $alert = trans_choice('sms::base.messages.sms_gateway.deleted_items', count($ids));
 
             return true;
         } catch (Throwable $e) {
@@ -317,36 +268,27 @@ class SmsGatewayController extends Controller
     }
 
     /**
-     * Change Status the specified resource from storage.
+     * Change Default the specified resource from storage.
      *
      * @param array $ids
      * @param bool $value
-     * @param mixed $params
      * @param string|null $alert
      * @param string|null $danger
      *
      * @return bool
      * @throws Throwable
      */
-    public function changeStatus(array $ids, bool $value, mixed $params, string &$alert = null, string &$danger = null): bool
+    public function changeDefault(array $ids, bool $value, string &$alert = null, string &$danger = null): bool
     {
-        $type = $params[2] ?? null;
-
-        $serviceType = SmsGatewayType::type($type);
-
         try {
             foreach ($ids as $id) {
                 SmsGateway::update($id, ['status' => $value]);
             }
 
             if ($value) {
-                $alert = trans_choice('taxonomy::base.messages.status.enable', count($ids), [
-                    'taxonomy' => $serviceType->getLabel()
-                ]);
+                $alert = trans_choice('taxonomy::base.messages.status.enable', count($ids));
             } else {
-                $alert = trans_choice('taxonomy::base.messages.status.disable', count($ids), [
-                    'taxonomy' => $serviceType->getLabel()
-                ]);
+                $alert = trans_choice('taxonomy::base.messages.status.disable', count($ids));
             }
 
             return true;
@@ -354,48 +296,6 @@ class SmsGatewayController extends Controller
             $danger = $e->getMessage();
 
             return false;
-        }
-    }
-
-    /**
-     * Import data
-     */
-    public function import(ImportActionListRequest $request, string $panel, string $section, string $type)
-    {
-        //
-    }
-
-    /**
-     * Export data
-     */
-    public function export(ExportActionListRequest $request, string $panel, string $section, string $type)
-    {
-        $export_type = $request->type;
-
-        $filePath = public_path('favicon.ico');
-        $fileName = 'favicon.ico';
-
-        return response()->download($filePath, $fileName, [
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
-        ]);
-    }
-
-    /**
-     * Set Translation in list
-     *
-     * @param SetTranslationRequest $request
-     *
-     * @return JsonResponse
-     * @throws Throwable
-     */
-    public function setTranslation(SetTranslationRequest $request): JsonResponse
-    {
-        try {
-            return $this->response(
-                SmsGateway::setTranslation($request->validated())
-            );
-        } catch (Throwable $exception) {
-            return $this->response(message: $exception->getMessage(), status: $exception->getCode());
         }
     }
 }
