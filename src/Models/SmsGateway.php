@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property mixed $id
  * @property string $name
  * @property string $driver
  * @property array $fields
