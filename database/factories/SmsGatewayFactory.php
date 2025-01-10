@@ -26,8 +26,8 @@ class SmsGatewayFactory extends Factory
         $fields = $driverClass->getFields();
 
         $fields_values = [];
-        foreach ($fields as $field) {
-            $fields_values[$field] = $this->faker->word;
+        foreach ($fields as $field_key => $field_value) {
+            $fields_values[$field_key] = $this->faker->word;
         }
 
         return [
