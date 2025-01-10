@@ -22,6 +22,7 @@ class SmsServiceProvider extends PackageCoreServiceProvider
             ->hasConfig()
             ->hasMigration()
             ->hasTranslation()
+            ->hasRoute()
             ->registerClass('Sms', Sms::class);
     }
 }
