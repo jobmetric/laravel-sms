@@ -10,7 +10,7 @@ loadScriptsSequentially([
             serverSide: true,
             drawCallback: function(settings) {},
             ajax: {
-                url: localize.sms_gateway.route,
+                url: getLocalize('sms_gateway.route'),
                 data: function (data) {
                     if (data.order && data.order.length > 0) {
                         data.sort = data.order[0].dir === 'asc' ? data.columns[data.order[0].column].name : `-${data.columns[data.order[0].column].name}`
@@ -55,9 +55,9 @@ loadScriptsSequentially([
                 {
                     data: function(e) {
                         return `<div class="d-flex justify-content-center align-items-center">
-                                    <a href="${localize.sms_gateway.route}/${e.id}/edit" class="btn btn-sm btn-outline btn-outline-dashed bg-light-success btn-color-gray-800">
+                                    <a href="${getLocalize('sms_gateway.route')}/${e.id}/edit" class="btn btn-sm btn-outline btn-outline-dashed bg-light-success btn-color-gray-800">
                                         <i class="la la-edit fs-2 position-absolute"></i>
-                                        <span class="ps-9">${localize.language.panelio.button.edit}</span>
+                                        <span class="ps-9">${getLocalize('language.panelio.button.edit')}</span>
                                     </a>
                                </div>`
                     },
@@ -70,8 +70,8 @@ loadScriptsSequentially([
             searching: false,
             lengthChange: false,
             deferRender: true,
-            pageLength: localize.list_view.page_limit,
-            language: localize.language.datatable
+            pageLength: getLocalize('list_view.page_limit'),
+            language: getLocalize('language.datatable')
         })
     })
 })
