@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array store(array $data)
  * @method static array update(int $sms_gateway_id, array $data)
  * @method static array delete(int $sms_gateway_id)
+ * @method static array getFields(string $driver, int|null $sms_gateway_id = null)
  */
 class SmsGateway extends Facade
 {

@@ -209,4 +209,44 @@ class SmsGateway
             'status' => 200
         ];
     }
+
+    /**
+     * Get the field driver.
+     *
+     * @param string $driver
+     * @param int|null $sms_gateway_id
+     *
+     * @return array
+     * @throws Throwable
+     */
+    public function getFields(string $driver, int|null $sms_gateway_id = null): array
+    {
+        try {
+            $results = (new $driver)->getFields();
+
+            $fields = [];
+            foreach ($results as $field_key => $field_value) {
+                $fields[$field_key]['title'] = trans($field_value);
+            }
+        } catch (Throwable $e) {
+            $fields = [];
+        }
+
+        if ($sms_gateway_id) {
+            $sms_gateway = SmsGatewayModel::find($sms_gateway_id);
+            if ($sms_gateway) {
+                foreach ($sms_gateway->fields as $field_key => $field_value) {
+                    $fields[$field_key]['value'] = $field_value;
+                }
+            }
+        }
+
+        $data['theme'] = view('sms::sms_gateway.fields', compact('fields'))->render();
+
+        return [
+            'ok' => true,
+            'data' => $data,
+            'status' => 200
+        ];
+    }
 }

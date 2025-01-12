@@ -27,10 +27,10 @@
                                 </div>
                                 <div class="mb-10">
                                     <label class="form-label">{{ trans('sms::base.form.sms_gateway.fields.driver.title') }}</label>
-                                    <select name="driver" class="form-select" data-control="select2">
+                                    <select name="driver" class="form-select" id="field-driver" data-control="select2" onchange="smsGateway.driver.change()">
                                         <option value="">{{ trans('package-core::base.select.none') }}</option>
                                         @foreach($drivers as $driver)
-                                            <option value="{{ $driver }}" @if(old('driver', $sms_gateway->driver ?? null) == $driver) selected @endif>{{ $driver }}</option>
+                                            <option value="{{ $driver['value'] }}" @if(old('driver', $sms_gateway->driver ?? null) == $driver['value']) selected @endif>{{ trans($driver['name']) }}</option>
                                         @endforeach
                                     </select>
                                     @error('driver')
@@ -43,39 +43,40 @@
 
                         @php
                             $driver = old('driver', $sms_gateway->driver ?? null);
-                        @endphp
 
-                        @if($driver)
-                            @php
+                            if ($driver) {
                                 $driverClass = new $driver;
                                 $fields = $driverClass->getFields();
+                            } else {
+                                $fields = [];
+                            }
 
-                                foreach ($fields as $field_key => $field_trans_key) {
-                                    $field_data[$field_key]['title'] = trans($field_trans_key);
-                                    $field_data[$field_key]['value'] = old('fields.' . $field_key, $sms_gateway->fields[$field_key] ?? null);
-                                }
-                            @endphp
-                            <!--begin::Driver Fields-->
-                            <div class="card card-flush py-4 mb-10" id="box-driver-fields">
-                                <div class="card-header">
-                                    <div class="card-title">
-                                        <span class="fs-5 fw-bold">{{ trans('sms::base.form.sms_gateway.cards.driver_fields') }}</span>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    @foreach($field_data as $field_key => $field)
-                                        <div class="mb-10">
-                                            <label class="form-label">{{ $field['title'] }}</label>
-                                            <input type="text" name="fields[{{ $field_key }}]" class="form-control mb-2" value="{{ $field['value'] }}">
-                                            @error('fields.' . $field_key)
-                                                <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    @endforeach
+                            $field_data = [];
+                            foreach ($fields as $field_key => $field_trans_key) {
+                                $field_data[$field_key]['title'] = trans($field_trans_key);
+                                $field_data[$field_key]['value'] = old('fields.' . $field_key, $sms_gateway->fields[$field_key] ?? null);
+                            }
+                        @endphp
+                        <!--begin::Driver Fields-->
+                        <div class="card card-flush py-4 mb-10 @if(!$driver) d-none @endif" id="box-driver-fields">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span class="fs-5 fw-bold">{{ trans('sms::base.form.sms_gateway.cards.driver_fields') }}</span>
                                 </div>
                             </div>
-                            <!--end::Driver Fields-->
-                        @endif
+                            <div class="card-body">
+                                @foreach($field_data as $field_key => $field)
+                                    <div class="mb-10">
+                                        <label class="form-label">{{ $field['title'] }}</label>
+                                        <input type="text" name="fields[{{ $field_key }}]" class="form-control mb-2" value="{{ $field['value'] }}">
+                                        @error('fields.' . $field_key)
+                                            <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <!--end::Driver Fields-->
                     </div>
                 </div>
             </div>

@@ -16,7 +16,8 @@ use JobMetric\Sms\Http\Controllers\SmsGatewayController;
 // sms
 Route::prefix('p/{panel}/{section}/sms')->name('sms.')->namespace('JobMetric\Sms\Http\Controllers')->group(function () {
     Route::middleware(Middleware::getMiddlewares())->group(function () {
-        Route::options('sms_gateway', [SmsGatewayController::class, 'options'])->name('sms_gateway.options');
-        Route::resource('sms_gateway', SmsGatewayController::class)->except(['show', 'destroy']);
+        Route::get('sms-gateway/get-fields', [SmsGatewayController::class, 'getFields'])->name('sms-gateway.get-fields');
+        Route::options('sms-gateway', [SmsGatewayController::class, 'options'])->name('sms-gateway.options');
+        Route::resource('sms-gateway', SmsGatewayController::class)->except(['show', 'destroy']);
     });
 });

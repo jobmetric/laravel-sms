@@ -10,6 +10,7 @@ use JobMetric\Panelio\Facades\Button;
 use JobMetric\Panelio\Facades\Datatable;
 use JobMetric\Panelio\Http\Controllers\Controller;
 use JobMetric\Sms\Facades\SmsGateway;
+use JobMetric\Sms\Http\Requests\GetFieldsRequest;
 use JobMetric\Sms\Http\Requests\StoreSmsGatewayRequest;
 use JobMetric\Sms\Http\Requests\UpdateSmsGatewayRequest;
 use JobMetric\Sms\Http\Resources\SmsGatewayResource;
@@ -26,10 +27,11 @@ class SmsGatewayController extends Controller
             $parameters = request()->route()->parameters();
 
             $this->route = [
-                'index' => route('sms.sms_gateway.index', $parameters),
-                'create' => route('sms.sms_gateway.create', $parameters),
-                'store' => route('sms.sms_gateway.store', $parameters),
-                'options' => route('sms.sms_gateway.options', $parameters),
+                'index' => route('sms.sms-gateway.index', $parameters),
+                'create' => route('sms.sms-gateway.create', $parameters),
+                'store' => route('sms.sms-gateway.store', $parameters),
+                'options' => route('sms.sms-gateway.options', $parameters),
+                'getFields' => route('sms.sms-gateway.get-fields', $parameters),
             ];
         }
     }
@@ -69,8 +71,6 @@ class SmsGatewayController extends Controller
             'route' => $this->route['index'],
         ]);
 
-        DomiPlugins('jquery.form');
-
         DomiScript('assets/vendor/sms/js/sms_gateway/list.js');
 
         $data['route'] = $this->route['options'];
@@ -106,11 +106,21 @@ class SmsGatewayController extends Controller
         Button::saveClose();
         Button::cancel($this->route['index']);
 
+        DomiLocalize('sms_gateway', [
+            'getFields' => $this->route['getFields'],
+        ]);
+
         DomiScript('assets/vendor/sms/js/sms_gateway/form.js');
 
         $data['action'] = $this->route['store'];
 
-        $data['drivers'] = getDriverNames(config('sms.namespaces'));
+        $data['drivers'] = [];
+        foreach (getDriverNames(config('sms.namespaces')) as $driver) {
+            $data['drivers'][] = [
+                'value' => $driver,
+                'name' => (new $driver)->getDriverName(),
+            ];
+        }
 
         return view('sms::sms_gateway.form', $data);
     }
@@ -184,16 +194,27 @@ class SmsGatewayController extends Controller
         Button::saveClose();
         Button::cancel($this->route['index']);
 
+        DomiLocalize('sms_gateway', [
+            'getFields' => $this->route['getFields']
+        ]);
+
         DomiScript('assets/vendor/sms/js/sms_gateway/form.js');
 
-        $data['action'] = route('sms.sms_gateway.update', [
+        $data['action'] = route('sms.sms-gateway.update', [
             'panel' => $panel,
             'section' => $section,
             'sms_gateway' => $sms_gateway->id
         ]);
 
         $data['sms_gateway'] = $sms_gateway;
-        $data['drivers'] = getDriverNames(config('sms.namespaces'));
+
+        $data['drivers'] = [];
+        foreach (getDriverNames(config('sms.namespaces')) as $driver) {
+            $data['drivers'][] = [
+                'value' => $driver,
+                'name' => (new $driver)->getDriverName(),
+            ];
+        }
 
         return view('sms::sms_gateway.form', $data);
     }
@@ -296,6 +317,25 @@ class SmsGatewayController extends Controller
             $danger = $e->getMessage();
 
             return false;
+        }
+    }
+
+    /**
+     * Get fields in driver.
+     *
+     * @param GetFieldsRequest $request
+     *
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function getFields(GetFieldsRequest $request): JsonResponse
+    {
+        try {
+            return $this->response(
+                SmsGateway::getFields($request->driver, $request->sms_gateway)
+            );
+        } catch (Throwable $exception) {
+            return $this->response(message: $exception->getMessage(), status: $exception->getCode());
         }
     }
 }
