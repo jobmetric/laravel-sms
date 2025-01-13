@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use JobMetric\Panelio\Facades\Middleware;
+use JobMetric\Sms\Http\Controllers\SmsController;
 use JobMetric\Sms\Http\Controllers\SmsGatewayController;
 
 /*
@@ -19,5 +20,6 @@ Route::prefix('p/{panel}/{section}/sms')->name('sms.')->namespace('JobMetric\Sms
         Route::get('sms-gateway/get-fields', [SmsGatewayController::class, 'getFields'])->name('sms-gateway.get-fields');
         Route::options('sms-gateway', [SmsGatewayController::class, 'options'])->name('sms-gateway.options');
         Route::resource('sms-gateway', SmsGatewayController::class)->except(['show', 'destroy']);
+        Route::get('sms', [SmsController::class, 'index'])->name('sms.index');
     });
 });
