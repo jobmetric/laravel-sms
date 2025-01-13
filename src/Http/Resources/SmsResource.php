@@ -28,6 +28,8 @@ use JobMetric\Sms\Models\SmsGateway;
  * @property string $status
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @property mixed smsable_resource
  */
 class SmsResource extends JsonResource
 {
@@ -46,6 +48,7 @@ class SmsResource extends JsonResource
             'user' => $this->whenLoaded('user', function () {
                 return UserResource::make($this->user);
             }),
+            'smsable' => $this?->smsable_resource,
             'mobile_prefix' => $this->mobile_prefix,
             'mobile' => $this->mobile,
             'sender' => $this->sender,

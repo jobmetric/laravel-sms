@@ -19,6 +19,7 @@ return new class extends Migration {
 
             $table->foreignId('sms_gateway_id')->index()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->index()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->nullableMorphs('smsable');
 
             $table->string('mobile_prefix')->index();
             $table->string('mobile')->index();
