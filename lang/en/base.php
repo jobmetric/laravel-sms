@@ -27,7 +27,39 @@ return [
         "sms_gateway_not_found" => "The SMS gateway with number :number was not found.",
     ],
 
+    "sms_status" => [
+        "dns" => "Do Not Send",
+        "sent" => "Sent",
+        "sending" => "Sending",
+        "error" => "Error",
+        "deliver" => "Delivered",
+        "unknown" => "Unknown",
+    ],
+
     "list" => [
+        "sms" => [
+            "title" => "SMS",
+            "description" => "List of SMS sent to users and customers.",
+            "filters" => [
+                "note" => [
+                    "title" => "Note",
+                    "placeholder" => "Search by note",
+                ],
+            ],
+            "columns" => [
+                "note" => "Note",
+                "mobile" => "Mobile",
+                "created_at" => "Sent Date",
+                "sms_gateway" => "SMS Gateway",
+                "sender" => "Sender",
+                "pattern" => "Pattern",
+                "note_type" => "Note Type",
+                "page" => "Page Count",
+                "price" => "Price",
+                "reference_id" => "Reference ID",
+                "reference_status" => "Reference Status",
+            ],
+        ],
         "sms_gateway" => [
             "title" => "SMS Gateway",
             "description" => "List of SMS gateways used on the website, always one gateway must be selected as default to send SMS through it.",
