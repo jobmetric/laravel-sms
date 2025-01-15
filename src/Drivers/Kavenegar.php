@@ -15,8 +15,8 @@ use Throwable;
 
 class Kavenegar implements SmsContract
 {
-    private string $api_key;
-    private string $sender;
+    public string $api_key;
+    public string $sender;
 
     /**
      * Get Driver Name
@@ -67,7 +67,7 @@ class Kavenegar implements SmsContract
         $mobile = str_replace('+', '00', $sms->mobile_prefix) . $sms->mobile;
 
         if (env('DO_NOT_SEND_SMS')) {
-            $sms->status = SmsFieldStatusEnum::SENT;
+            $sms->status = SmsFieldStatusEnum::SENT();
             $sms->save();
 
             return;
