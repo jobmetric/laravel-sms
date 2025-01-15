@@ -248,7 +248,7 @@ class SmsGatewayController extends Controller
             }
 
             // btn save
-            return redirect()->route('sms.sms_gateway.edit', [
+            return redirect()->route('sms.sms-gateway.edit', [
                 'panel' => $panel,
                 'section' => $section,
                 'sms_gateway' => $sms_gateway['data']->id
