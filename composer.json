@@ -23,6 +23,8 @@
         "jobmetric/laravel-package-core": "^1.19.1",
         "jobmetric/domi": "^1.13.1",
         "jobmetric/panelio": "^1.16",
+        "jobmetric/laravel-location": "^1.2.2",
+        "jobmetric/authio": "^1.0",
         "spatie/laravel-query-builder": "^5.7",
         "kavenegar/php": "^1.2"
     },
