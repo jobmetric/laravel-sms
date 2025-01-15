@@ -16,6 +16,9 @@ return [
     ],
 
     "messages" => [
+        "sms" => [
+            "send_sms_success" => "The SMS was successfully sent.",
+        ],
         "sms_gateway" => [
             "created" => "The SMS gateway was successfully created.",
             "updated" => "The SMS gateway was successfully updated.",
@@ -25,6 +28,7 @@ return [
 
     "exceptions" => [
         "sms_gateway_not_found" => "The SMS gateway with number :number was not found.",
+        "sms_gateway_default_not_found" => "The default SMS gateway was not found.",
     ],
 
     "sms_status" => [
@@ -58,6 +62,22 @@ return [
                 "price" => "Price",
                 "reference_id" => "Reference ID",
                 "reference_status" => "Reference Status",
+            ],
+            "add_modal" => [
+                "title" => "Send SMS",
+                "fields" => [
+                    "mobile_prefix" => [
+                        "title" => "Mobile Prefix",
+                    ],
+                    "mobile" => [
+                        "title" => "Mobile Number",
+                        "placeholder" => "Enter mobile number",
+                    ],
+                    "note" => [
+                        "title" => "Note",
+                        "placeholder" => "Enter note",
+                    ],
+                ],
             ],
         ],
         "sms_gateway" => [

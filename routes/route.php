@@ -21,5 +21,6 @@ Route::prefix('p/{panel}/{section}/sms')->name('sms.')->namespace('JobMetric\Sms
         Route::options('sms-gateway', [SmsGatewayController::class, 'options'])->name('sms-gateway.options');
         Route::resource('sms-gateway', SmsGatewayController::class)->except(['show', 'destroy']);
         Route::get('sms', [SmsController::class, 'index'])->name('sms.index');
+        Route::post('send-sms', [SmsController::class, 'sendSms'])->name('sms.send-sms');
     });
 });

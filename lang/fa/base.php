@@ -16,6 +16,9 @@ return [
     ],
 
     "messages" => [
+        "sms" => [
+            "send_sms_success" => "پیامک با موفقیت ارسال شد.",
+        ],
         "sms_gateway" => [
             "created" => "درگاه پیامک با موفقیت ایجاد شد.",
             "updated" => "درگاه پیامک با موفقیت ویرایش شد.",
@@ -25,6 +28,7 @@ return [
 
     "exceptions" => [
         "sms_gateway_not_found" => "درگاه پیامک با شماره :number یافت نشد.",
+        "sms_gateway_default_not_found" => "درگاه پیامک پیش فرض یافت نشد.",
     ],
 
     "sms_status" => [
@@ -58,6 +62,22 @@ return [
                 "price" => "هزینه",
                 "reference_id" => "شناسه مرجع",
                 "reference_status" => "وضعیت مرجع",
+            ],
+            "add_modal" => [
+                "title" => "ارسال پیامک",
+                "fields" => [
+                    "mobile_prefix" => [
+                        "title" => "پیش شماره",
+                    ],
+                    "mobile" => [
+                        "title" => "شماره موبایل",
+                        "placeholder" => "شماره موبایل را وارد کنید",
+                    ],
+                    "note" => [
+                        "title" => "متن پیام",
+                        "placeholder" => "متن پیام را وارد کنید",
+                    ],
+                ],
             ],
         ],
         "sms_gateway" => [
