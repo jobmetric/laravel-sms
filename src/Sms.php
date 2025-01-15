@@ -5,8 +5,11 @@ namespace JobMetric\Sms;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
 use JobMetric\Sms\Enums\SmsFieldNoteTypeEnum;
+use JobMetric\Sms\Exceptions\SmsGatewayDefaultNotFoundException;
+use JobMetric\Sms\Exceptions\SmsGatewayNotFoundException;
 use JobMetric\Sms\Http\Resources\SmsResource;
 use JobMetric\Sms\Models\Sms as SmsModel;
+use JobMetric\Sms\Models\SmsGateway as SmsGatewayModel;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
@@ -91,6 +94,68 @@ class Sms
         return SmsResource::collection(
             $this->query($filter)->get()
         );
+    }
+
+    /**
+     * Store sms.
+     *
+     * @param int $sms_gateway_id
+     * @param string $mobile_prefix
+     * @param string $mobile
+     * @param string $note
+     *
+     * @return SmsModel
+     * @throws Throwable
+     */
+    private function store(int $sms_gateway_id, string $mobile_prefix, string $mobile, string $note): SmsModel
+    {
+        $processText = $this->processText($note);
+
+        $sms = new SmsModel;
+        $sms->sms_gateway_id = $sms_gateway_id;
+        $sms->mobile_prefix = $mobile_prefix;
+        $sms->mobile = $mobile;
+        $sms->note = $note;
+        $sms->note_type = $processText['type'];
+        $sms->page = $processText['page'];
+
+        $sms->save();
+
+        return $sms;
+    }
+
+    /**
+     * Send sms.
+     *
+     * @param string $mobile_prefix
+     * @param string $mobile
+     * @param string $note
+     *
+     * @return array
+     * @throws Throwable
+     */
+    public function sendSms(string $mobile_prefix, string $mobile, string $note): array
+    {
+        /**
+         * @var SmsGatewayModel $smsGateway
+         */
+        $smsGateway = SmsGatewayModel::query()->where('default', true)->first();
+
+        if (!$smsGateway) {
+            throw new SmsGatewayDefaultNotFoundException;
+        }
+
+        $sms = $this->store($smsGateway->id, $mobile_prefix, $mobile, $note);
+
+        $gateway = app($smsGateway->driver);
+        $gateway->setParams($smsGateway);
+        $gateway->send($sms);
+
+        return [
+            'ok' => true,
+            'message' => trans('sms::base.messages.sms.send_sms_success'),
+            'data' => SmsResource::make($sms),
+        ];
     }
 
     /**
